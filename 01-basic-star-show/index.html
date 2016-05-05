@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>webgl</title>
+    <style>
+        #mainCanvas{
+            height: 100%;
+            width: 100%;
+        }
+        
+        body{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body onload="init()">
+    <canvas id="mainCanvas">
+        <h1>Not supported</h1>
+    </canvas>
+    <!--<script src="matrix.js"></script>-->
+    <script src="webgl.js"></script>
+    <script id="shader-fs" type="x-shader/x-fragment">
+        varying lowp vec4 v_fragmentColor;
+        void main(void) {
+           // gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            gl_FragColor = v_fragmentColor; 
+        }
+    </script>
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+        attribute vec3 shaderColor;
+        varying vec4 v_fragmentColor;
+        void main(void) {
+            gl_Position = vec4(aVertexPosition, 1.0);
+            v_fragmentColor = vec4(shaderColor,1.0);
+        }
+    </script>
+</body>
+</html>
