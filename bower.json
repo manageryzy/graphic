@@ -1,0 +1,15 @@
+{
+  "name": "graphic",
+  "description": "",
+  "main": "",
+  "moduleType": [],
+  "license": "unlcense",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

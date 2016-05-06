@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>webgl</title>
+    <style>
+        #mainCanvas{
+            height: 100%;
+            width: 100%;
+        }
+        
+        body{
+            padding: 0;
+            margin: 0;
+        }
+    </style>
+</head>
+<body onload="init()">
+    <canvas id="mainCanvas">
+        <h1>Not supported</h1>
+    </canvas>
+    <!--<script src="matrix.js"></script>-->
+    <script src="world.js"></script>
+    <script src="main.js"></script>
+    <script id="shader-fs" type="x-shader/x-fragment">
+        void main(void) {
+            gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+        }
+    </script>
+    <script id="shader-vs" type="x-shader/x-vertex">
+        attribute vec3 aVertexPosition;
+        void main(void) {
+            gl_Position = vec4(aVertexPosition, 1.0);
+        }
+    </script>
+</body>
+</html>
