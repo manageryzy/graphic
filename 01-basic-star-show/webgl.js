@@ -50,10 +50,7 @@ function initModel() {
         
         color.push(Math.random(),Math.random(),Math.random());
     }
-    
-    
-    
-    
+ 
 }
 
 // draw the sence one time

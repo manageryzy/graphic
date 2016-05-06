@@ -1,3 +1,11 @@
+// this is the file for the world and entity of the world.
+// NOTICE:this simulation may have the diffuse issue. 
+//I'm don't know the coverge condition
+
+///<reference path="main.d.ts"/>
+
+import main = require('main');// import the draw func
+
 export class World{
     protected entityList:Array<Entity> = new Array<Entity>();
     
@@ -12,12 +20,21 @@ export class World{
     }
     
     tick(){
-        this.entityList.forEach(entity => {
-            entity.update();
-        });
+        //update the world
+        for (var index = 0; index < this.entityList.length; index++) {
+            var element = this.entityList[index];
+            element.update();
+        }
+        
+        //draw the sence
+        for (var index = 0; index < this.entityList.length; index++) {
+            var element = this.entityList[index];
+            main.doDraw(element);
+        }
     }
     
     constructor(){
+        //start the game looper
         setInterval(()=>{
             this.tick();
         },100);
@@ -119,6 +136,7 @@ export class Entity{
             return;
         }
         
+        //check for the world bound
         if(this.x<-1.0){
             this.setSpeedX(this.getSpeedX()+0.0001);
         }
@@ -135,24 +153,47 @@ export class Entity{
             this.setSpeedY(this.getSpeedY()-0.0001);
         }
         
+        // chenck force of every entity
         let forceX = 0;
         let forceY = 0;
         
         for (var index = 0; index < this.world.getEntityList().length; index++) {
             var element = this.world.getEntityList()[index];
+            
+            //if same position or same object , continue
             if(element.getX()==this.getX() && element.getY()==this.getY() ){
                 continue;
             }
             
-            forceX += (this.getX() - element.getX())/this.mass;
-            forceY += (this.getY() - element.getY())/this.mass;
+            //AABB box test,ok this is not exactly the accrually AABB test
+            if(element.AABB(this.getX(),this.getY())||this.AABB(element.getX(),element.getY())){
+                // update the force. i know the rule is pretty strange
+                forceX += (this.getX() - element.getX())/this.mass;
+                forceY += (this.getY() - element.getY())/this.mass;
+            }
         }
         
+        //change the speed 
         this.setSpeedX(this.getSpeedX() + forceX/10);
         this.setSpeedY(this.getSpeedY() + forceY/10);
         
+        //change the position
         this.setX(this.getX() + this.getSpeedX()/10);
         this.setY(this.getY() + this.getSpeedY()/10);
+    }
+    
+    AABB(x:number,y:number):boolean{
+        var ax = this.x - this.sizeX/2;
+        var bx = this.x + this.sizeX/2;
+        var ay = this.y - this.sizeY/2;
+        var by = this.y + this.sizeY/2;
+        
+        if((ax<x && x<bx)&&
+            (ay<y && y<by)){
+            return true;
+        }
+        
+        return false;
     }
 }
 

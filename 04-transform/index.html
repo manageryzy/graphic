@@ -18,9 +18,21 @@
     <canvas id="mainCanvas">
         <h1>Not supported</h1>
     </canvas>
-    <!--<script src="matrix.js"></script>-->
-    <script src="world.js"></script>
-    <script src="main.js"></script>
+    <script src="../bower_compoments/seajs/dist/sea.js"></script>
+    <script>
+        // seajs 的简单配置
+        seajs.config({
+            base: "./",
+            alias: {
+                "world": "world.js"
+            }
+        })
+
+        // 加载入口模块
+        seajs.use("main.js",function(main){
+            main.inti();
+        });
+    </script>
     <script id="shader-fs" type="x-shader/x-fragment">
         void main(void) {
             gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
