@@ -13,6 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "seajs": "^3.0.0"
+    "seajs": "^3.0.0",
+    "requirejs": "^2.2.0"
   }
 }
