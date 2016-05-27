@@ -2,17 +2,23 @@ define(function(require, exports, module) {
     
     var canvas = document.getElementById('mainCanvas');
     var gl = canvas.getContext("webgl");
-    
-    var 
 
     // vertex array for the star model
     var vertices = [];
     var color = [];
+    
+    // uniform vars in shader
+    var shaderPM ,
+    shaderMVM ,
+    shaderTime ,
+    shaderResolution ;
 
     function init(){
-        resize(canvas);
         initShaders();
+        resize(canvas);
         initModel();
+        
+        gl.enable(gl.DEPTH_TEST);
     }
 
     function initModel() {
@@ -27,7 +33,9 @@ define(function(require, exports, module) {
         var transX = 0.0;
         var transY = 0.0;
         
-        for(var i=0;i<10;i++){
+        var lastX = 0.0;
+        var lastY = 0.0;
+        for(var i=0;i<11;i++){
             var x = Math.cos(i*0.2*Math.PI + rotate);
             var y = Math.sin(i*0.2*Math.PI + rotate);
             
@@ -45,31 +53,56 @@ define(function(require, exports, module) {
             x += transX;
             y += transY;
             
+            vertices.push(0.0,0.0,0.0);
+            vertices.push(lastX,lastY,0.0);
             vertices.push(x,y,0.0);
+            lastX = x;
+            lastY = y;
+            
+            if(i==0){
+                vertices = [];
+                continue;
+            }
             
             color.push(Math.random(),Math.random(),Math.random());
+            color.push(Math.random(),Math.random(),Math.random());
+            color.push(Math.random(),Math.random(),Math.random());
         }
-    
-    }
-
-    // draw the sence one time
-    function doDraw(Element) {
-        initModel();
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
         
         starVerticesBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, starVerticesBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-        
+    
         colorBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(color), gl.STATIC_DRAW);
+    }
+    
+    var time = 0.0;
+
+    // draw the sence one time
+    function doDraw(Element) {
+        
+        gl.uniform1f(shaderTime,time);
+       
+        gl.bindBuffer(gl.ARRAY_BUFFER, starVerticesBuffer);
+        gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+        
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
         gl.vertexAttribPointer(shaderColor, 3, gl.FLOAT, false, 0, 0);
         
-        gl.drawArrays(gl.LINE_LOOP, 0, 10);
+        gl.drawArrays(gl.TRIANGLES, 0, 30);
+        
+    }
+    
+    function clear(){
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT|gl.DEPTH_BUFFER_BIT);
+    }
+    
+    function finish(){
         gl.finish();
+        time+=0.005;
     }
 
 
@@ -161,6 +194,11 @@ define(function(require, exports, module) {
         shaderColor = gl.getAttribLocation(shaderProgram, "shaderColor");
         gl.enableVertexAttribArray(vertexPositionAttribute);
         gl.enableVertexAttribArray(shaderColor);
+        
+        shaderPM = gl.getUniformLocation(shaderProgram, "uPMatrix");
+        shaderMVM = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+        shaderTime = gl.getUniformLocation(shaderProgram, "time");
+        shaderResolution = gl.getUniformLocation(shaderProgram,"resolution");
     }
 
     //get shader from html dom
@@ -209,24 +247,28 @@ define(function(require, exports, module) {
 
     //init the canvas display size 
     function resize(canvas) {
-    // Lookup the size the browser is displaying the canvas.
-    var displayWidth  = canvas.clientWidth;
-    var displayHeight = canvas.clientHeight;
-    
-    // Check if the canvas is not the same size.
-    if (canvas.width  != displayWidth ||
-        canvas.height != displayHeight) {
-    
-        // Make the canvas the same size
-        canvas.width  = displayWidth;
-        canvas.height = displayHeight;
-    }
-    
-    len = displayWidth<displayHeight?displayWidth:displayHeight;
-    
-    gl.viewport(0, 0, len, len);
+        // Lookup the size the browser is displaying the canvas.
+        var displayWidth  = canvas.clientWidth;
+        var displayHeight = canvas.clientHeight;
+        
+        // Check if the canvas is not the same size.
+        if (canvas.width  != displayWidth ||
+            canvas.height != displayHeight) {
+        
+            // Make the canvas the same size
+            canvas.width  = displayWidth;
+            canvas.height = displayHeight;
+        }
+        
+        len = displayWidth<displayHeight?displayWidth:displayHeight;
+        
+        gl.uniform2f(shaderResolution,len,len);
+        
+        gl.viewport(0, 0, len, len);
     }
     
     module.exports.init = init;
     module.exports.doDraw = doDraw;
+    module.exports.finish = finish;
+    module.exports.clear = clear;
 });

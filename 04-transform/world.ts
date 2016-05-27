@@ -26,18 +26,21 @@ export class World{
             element.update();
         }
         
+        main.clear();
         //draw the sence
         for (var index = 0; index < this.entityList.length; index++) {
             var element = this.entityList[index];
             main.doDraw(element);
         }
+        
+        main.finish();
     }
     
     constructor(){
         //start the game looper
         setInterval(()=>{
             this.tick();
-        },100);
+        },50);
     }
 }
 
@@ -68,6 +71,12 @@ export class Entity{
         return this;
     }
     
+    setPos(x:number,y:number):Entity{
+        this.setX(x);
+        this.setY(y);
+        return this;
+    }
+    
     setSpeedX(x:number):Entity{
         this.speedX = x;
         return this;
@@ -75,6 +84,12 @@ export class Entity{
     
     setSpeedY(y:number):Entity{
         this.speedY = y;
+        return this;
+    }
+    
+    setSpeed(x:number,y:number):Entity{
+        this.setSpeedX(x);
+        this.setSpeedY(y);
         return this;
     }
     
@@ -100,6 +115,12 @@ export class Entity{
     
     setSizeY(y:number):Entity{
         this.sizeY = y;
+        return this;
+    }
+    
+    setSize(x:number,y:number):Entity{
+        this.setSizeX(x);
+        this.setSizeY(y)
         return this;
     }
     
@@ -174,12 +195,12 @@ export class Entity{
         }
         
         //change the speed 
-        this.setSpeedX(this.getSpeedX() + forceX/10);
-        this.setSpeedY(this.getSpeedY() + forceY/10);
+        this.setSpeedX(this.getSpeedX() + forceX/20);
+        this.setSpeedY(this.getSpeedY() + forceY/20);
         
         //change the position
-        this.setX(this.getX() + this.getSpeedX()/10);
-        this.setY(this.getY() + this.getSpeedY()/10);
+        this.setX(this.getX() + this.getSpeedX()/20);
+        this.setY(this.getY() + this.getSpeedY()/20);
     }
     
     AABB(x:number,y:number):boolean{
