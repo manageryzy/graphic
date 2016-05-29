@@ -13,7 +13,7 @@
     "tests"
   ],
   "dependencies": {
-    "seajs": "^3.0.0",
-    "requirejs": "^2.2.0"
+    "requirejs": "^2.2.0",
+    "gl-matrix": "latest"
   }
 }

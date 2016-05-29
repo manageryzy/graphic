@@ -159,19 +159,19 @@ export class Entity{
         
         //check for the world bound
         if(this.x<-1.0){
-            this.setSpeedX(this.getSpeedX()+0.0001);
+            this.setSpeedX(this.getSpeedX()+1.0);
         }
         
         if(this.y<-1.0){
-            this.setSpeedY(this.getSpeedY()+0.0001);
+            this.setSpeedY(this.getSpeedY()+1.0);
         }
         
         if(this.x>1.0){
-            this.setSpeedX(this.getSpeedX()-0.0001);
+            this.setSpeedX(this.getSpeedX()-1.0);
         }
         
         if(this.y>1.0){
-            this.setSpeedY(this.getSpeedY()-0.0001);
+            this.setSpeedY(this.getSpeedY()-1.0);
         }
         
         // chenck force of every entity
@@ -189,8 +189,8 @@ export class Entity{
             //AABB box test,ok this is not exactly the accrually AABB test
             if(element.AABB(this.getX(),this.getY())||this.AABB(element.getX(),element.getY())){
                 // update the force. i know the rule is pretty strange
-                forceX += (this.getX() - element.getX())/this.mass;
-                forceY += (this.getY() - element.getY())/this.mass;
+                forceX += (this.getX() - element.getX())*10/this.mass;
+                forceY += (this.getY() - element.getY())*10/this.mass;
             }
         }
         
